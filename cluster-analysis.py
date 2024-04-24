@@ -142,9 +142,34 @@ def combine_raw(raw1,raw2,H):
     elif H == "mean":
         combined[0] = raw1[0]
         combined[1] = [(a+b)/2 for a, b in zip(raw1[1], raw2[1])]
+        
         return combined
+    
+def normalise_sort(G1):
+    """Input a grounding - sort based on ratings and then forget the ratings.
+        Return a single sorted list of words"""
+        
+    combined_G1 = list(zip(G1[0],G1[1]))
+    ordered_pairs_G1 = sorted(combined_G1, key=lambda x: x[1])
+    ordered_strings_G1, ordered_floats_G1 = zip(*ordered_pairs_G1)    
+ 
+    return ordered_strings_G1
 
+def linear_transform(value,A,B,a,b):
+    """Linearly transforms an interval [A,B] to [a,b]"""
+    
+    return (value-A)*(b-a)/B-A +a
 
+def normalise_linear(G1,A,B,a,b):
+    """input a grounding and its grading scale A to B. output normalised data
+    on the scale a to b"""
+        
+    array_to_transform = G1[1]
+    transformed_array = [linear_transform(value,A,B,a,b) for value in array_to_transform]
+    G1[1] = transformed_array
+ 
+    return G1
+    
 
 ''''TEST RUNNING'''
 
