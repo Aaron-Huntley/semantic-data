@@ -13,6 +13,8 @@ import pandas as pd
 
 
 def import_grounding(data,grounding):
+    """Input data matrix from csv file and a string for which grounding.
+    Output raw data as a list of two arrays"""
     
     '''NEED TO NORMALISE THIS'''
     
@@ -38,6 +40,9 @@ def import_grounding(data,grounding):
     return A
     
 def distance_matrix(raw):
+    """Input raw data as a list of two arrays.
+    Output a distance matrix based on the second array"""
+    
     interoceptive_ratings = raw[1]
     n = len(interoceptive_ratings)
     
@@ -49,11 +54,12 @@ def distance_matrix(raw):
     M[np.diag_indices(n)] = 0
     
     return M
-
     
 def higherarchecal_clustering(M,D):
-    # Creating a dendrogram
-    # You can change the linkage method as per your requirement
+    """Input distance matrix and a bool.
+    Return the (single) linked data structure based on M.
+    Output a dendogram based on linked if D is True"""
+    
     plt.figure(figsize=(10, 7))
     linked = linkage(M, 'single')
     
@@ -65,16 +71,11 @@ def higherarchecal_clustering(M,D):
         plt.show()
     
     return linked
-    
-    # Performing agglomerative clustering
-    #cluster = AgglomerativeClustering(n_clusters=4, affinity='precomputed', linkage='ward')
-
-    # Fit and predict clusters using the precomputed distance matrix
-    #labels = cluster.fit_predict(M)
-    
 
 def filter_distance(raw,d):
-    #Filters the distance
+    """Input raw data as a list of two arrays and a float, d. 
+    Return list of two sets only including entries at positions whose distance
+    is less than d"""
     
     mask = raw[1] < d
     rawf = [[],[]]
@@ -83,14 +84,21 @@ def filter_distance(raw,d):
     
     return rawf
 
-
-def jaccard_similarity(set1, set2):
+def jaccard_similarity(set1,set2):
+    """Input two sets.
+    Return their similarity percentage as a float.
+    The similarity percentage is the intersection over the union times 100"""
+    
     intersection = len(set1.intersection(set2))
     union = len(set1.union(set2))
     similarity = intersection / union if union != 0 else 0  # Handle division by zero
     return similarity * 100
 
 def percent_compare(G1,G1N,G2,G2N,D):
+    """Input two raw data as a list of two arrays (G1,G2) and their names as 
+    a string (G1N,G2N) and a bool (D).
+    Output a list of size 1000 where entry n is the jaccard similarity of
+    the words of distance less than 8n/1000"""
 
     combined_G1 = list(zip(G1[0],G1[1]))
     ordered_pairs_G1 = sorted(combined_G1, key=lambda x: x[1])
@@ -107,7 +115,6 @@ def percent_compare(G1,G1N,G2,G2N,D):
         G1Str = [string for string, value in ordered_pairs_G1 if value < i]
         G2Str = [string for string, value in ordered_pairs_G2 if value < i]
         y.append(jaccard_similarity(set(G1Str),set(G2Str)))
-    
 
     if D == True:
         plt.plot(x,y)
@@ -115,10 +122,27 @@ def percent_compare(G1,G1N,G2,G2N,D):
         plt.xlabel('Words of distance < x')
         plt.ylabel('Percent Similarity')
         plt.show()
-        
-    
+            
     return y
 
+def combine_raw(raw1,raw2,H):
+    """Input two groundings and combine them using the hyperparemeter H.
+    Return the combined grounding as a list with two arrays.
+    Warning: doesn't check if the raw data has the same word ratings"""
+    
+    combined = [[],[]]
+    if H == "min":
+        combined[0] = raw1[0]
+        combined[1] = [min(a, b) for a, b in zip(raw1[1], raw2[1])]
+        return combined
+    elif H == "max":
+        combined[0] = raw1[0]
+        combined[1] = [max(a, b) for a, b in zip(raw1[1], raw2[1])]
+        return combined
+    elif H == "mean":
+        combined[0] = raw1[0]
+        combined[1] = [(a+b)/2 for a, b in zip(raw1[1], raw2[1])]
+        return combined
 
 
 
@@ -126,26 +150,16 @@ def percent_compare(G1,G1N,G2,G2N,D):
 
 data = pd.read_csv("Dataset.csv")
 
-'''Test dendogram
-intero = import_grounding(data,"Interoceptive")
-
-#Truncated data
-interoT = [[],[]]
-interoT[0] = intero[0][:100]
-interoT[1] = intero[1][:100]
-
-#Distance filtered data
-interoD = filter_distance(intero,1)
-
-M = distance_matrix(interoD)
-interolinked  = higherarchecal_clustering(M,False)
-'''
-
-'''Test percentage graphs'''
+'''Import Data'''
 
 valence = import_grounding(data,"Valence_Warriner")
 arousal = import_grounding(data,"Arousal_Warriner")
 social = import_grounding(data,"Socialness")
+intero = import_grounding(data,"Interoceptive")
+
+infinite =[[],[]]
+infinite[0] = social[0]
+infinite[1] = np.zeros(len(social[0]))
 
 valenceT = [[],[]]
 valenceT[0] = valence[0][:10]
@@ -155,10 +169,42 @@ arousalT = [[],[]]
 arousalT[0] = arousal[0][:10]
 arousalT[1] = arousal[1][:10]
 
-Val_Aro = percent_compare(valence,"Valence",arousal,"Arousal",True)
-Val_Soc = percent_compare(valence,"Valence",social,"Social",True)
-Aro_Soc = percent_compare(arousal,"Arousal",social,"Social",True)
-Aro_Aro = percent_compare(arousal,"Arousal",arousal,"Arousal",True)
+'''Test dendogram'''
+
+# intero = import_grounding(data,"Interoceptive")
+
+# #Truncated data
+# interoT = [[],[]]
+# interoT[0] = intero[0][:100]
+# interoT[1] = intero[1][:100]
+
+# #Distance filtered data
+# interoD = filter_distance(intero,1)
+
+# M = distance_matrix(interoD)
+# interolinked  = higherarchecal_clustering(M,False)
+
+'''Test percentage graphs'''
+
+# Val_Aro = percent_compare(valence,"Valence",arousal,"Arousal",True)
+# Val_Soc = percent_compare(valence,"Valence",social,"Social",True)
+
+# Aro_Soc = percent_compare(arousal,"Arousal",social,"Social",True)
+# Aro_Int = percent_compare(arousal,"Arousal",intero,"Intero",True)
+
+# Val_Int = percent_compare(valence,"Valence",intero,"Intero",True)
+# Soc_Int = percent_compare(social,"Social",intero,"Intero",True)
+
+# Aro_Aro = percent_compare(arousal,"Arousal",arousal,"Arousal",True)
+
+'''Test combined'''
+
+emotion = combine_raw(valence, arousal, "min")
+
+# Emo_Int = percent_compare(emotion,"Emotion",intero,"Intero",True)
+
+Inf_Int =  percent_compare(infinite,"Inf",intero,"Intero",True)
+
 
 
     
