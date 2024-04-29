@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Spyder Editor
-
-This is a temporary script file.
+Tools for data analysis:
+    
 """
 
 import numpy as np
@@ -94,7 +93,7 @@ def jaccard_similarity(set1,set2):
     similarity = intersection / union if union != 0 else 0  # Handle division by zero
     return similarity * 100
 
-def percent_compare(G1,G1N,G2,G2N,D):
+def percent_compare_linear(G1,G1N,G2,G2N,D):
     """Input two raw data as a list of two arrays (G1,G2) and their names as 
     a string (G1N,G2N) and a bool (D).
     Output a list of size 1000 where entry n is the jaccard similarity of
@@ -124,6 +123,23 @@ def percent_compare(G1,G1N,G2,G2N,D):
         plt.show()
             
     return y
+
+def percent_compare_ordered(G1,G1N,G2,G2N,D):
+    
+    x = np.arange(len(G1))
+    y=[]
+    for i in x:
+        y.append(jaccard_similarity(set(G1[:i]),set(G2[:i])))
+
+    if D == True:
+        plt.plot(x,y)
+        plt.title('Comparison of '+str(G1N)+" and "+str(G2N))
+        plt.xlabel('First n words in ordered list')
+        plt.ylabel('Percent Similarity')
+        plt.show()
+    
+    return y
+    
 
 def combine_raw(raw1,raw2,H):
     """Input two groundings and combine them using the hyperparemeter H.
@@ -171,64 +187,6 @@ def normalise_linear(G1,A,B,a,b):
     return G1
     
 
-''''TEST RUNNING'''
-
-data = pd.read_csv("Dataset.csv")
-
-'''Import Data'''
-
-valence = import_grounding(data,"Valence_Warriner")
-arousal = import_grounding(data,"Arousal_Warriner")
-social = import_grounding(data,"Socialness")
-intero = import_grounding(data,"Interoceptive")
-
-infinite =[[],[]]
-infinite[0] = social[0]
-infinite[1] = np.zeros(len(social[0]))
-
-valenceT = [[],[]]
-valenceT[0] = valence[0][:10]
-valenceT[1] = valence[1][:10]
-
-arousalT = [[],[]]
-arousalT[0] = arousal[0][:10]
-arousalT[1] = arousal[1][:10]
-
-'''Test dendogram'''
-
-# intero = import_grounding(data,"Interoceptive")
-
-# #Truncated data
-# interoT = [[],[]]
-# interoT[0] = intero[0][:100]
-# interoT[1] = intero[1][:100]
-
-# #Distance filtered data
-# interoD = filter_distance(intero,1)
-
-# M = distance_matrix(interoD)
-# interolinked  = higherarchecal_clustering(M,False)
-
-'''Test percentage graphs'''
-
-# Val_Aro = percent_compare(valence,"Valence",arousal,"Arousal",True)
-# Val_Soc = percent_compare(valence,"Valence",social,"Social",True)
-
-# Aro_Soc = percent_compare(arousal,"Arousal",social,"Social",True)
-# Aro_Int = percent_compare(arousal,"Arousal",intero,"Intero",True)
-
-# Val_Int = percent_compare(valence,"Valence",intero,"Intero",True)
-# Soc_Int = percent_compare(social,"Social",intero,"Intero",True)
-
-# Aro_Aro = percent_compare(arousal,"Arousal",arousal,"Arousal",True)
-
-'''Test combined'''
-
-emotion = combine_raw(valence, arousal, "min")
-
-# Emo_Int = percent_compare(emotion,"Emotion",intero,"Intero",True)
-
-Inf_Int =  percent_compare(infinite,"Inf",intero,"Intero",True)
 
 
 
