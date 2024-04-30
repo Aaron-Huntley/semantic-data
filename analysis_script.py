@@ -14,17 +14,19 @@ def import_all_linear():
     
     data = pd.read_csv("Dataset.csv")
     
-    for i in range(1, 10):
+    for i in range(1, 55):
         
           tempraw1 = [data.iloc[:, 0].values,data.iloc[:, i].values]
-          tempraw1N = normalise_linear(tempraw1, math.floor(min(tempraw1[1])),math.ceil(max(tempraw1[1])) , 0, 8)
+          filtered_data = [x for x in tempraw1[1] if not isinstance(x, float) or not math.isnan(x)]
+          tempraw1N = normalise_linear(tempraw1, math.floor(min(filtered_data)),math.ceil(max(filtered_data)) , 0, 8)
          
-          for j in range(i,10):
+          for j in range(i,55):
              
               tempraw2 = [data.iloc[:, 0].values,data.iloc[:, j].values]
-              tempraw2N = normalise_linear(tempraw2, math.floor(min(tempraw2[1])), math.ceil(max(tempraw2[1])), 0, 8)
+              filtered_data2 = [x for x in tempraw2[1] if not isinstance(x, float) or not math.isnan(x)]
+              tempraw2N = normalise_linear(tempraw2, math.floor(min(filtered_data2)), math.ceil(max(filtered_data2)), 0, 8)
              
-              percent_compare_linear(tempraw1N,data.columns[i],tempraw2N,data.columns[j],True)
+              percent_compare_linear(tempraw1N,data.columns[i],tempraw2N,data.columns[j],True,'C:/Users/ahuntle4/.spyder-py3/Data Anal/Graphs')
 
 
 
@@ -34,7 +36,7 @@ def import_all_ordered():
       
     data = pd.read_csv("Dataset.csv")
       
-    for i in range(1, 55):
+    for i in range(1,55):
         tempraw1 = [data.iloc[:, 0].values, data.iloc[:, i].values]
         raw1N = normalise_sort(tempraw1)
       
@@ -42,18 +44,15 @@ def import_all_ordered():
             tempraw2 = [data.iloc[:, 0].values, data.iloc[:, j].values]
             raw2N = normalise_sort(tempraw2)  # Fixed the variable name here
                 
-            percent_compare_ordered(raw1N, data.columns[i], raw2N, data.columns[j], True)
-
-
-
+            percent_compare_ordered(raw1N, data.columns[i], raw2N, data.columns[j], True,'C:/Users/ahuntle4/.spyder-py3/Data Anal/Graphs')
 
 
 '''TEST RUNNING'''
 
-
+import_all_ordered()
 #import_all_linear()
 
-import_all_ordered()
+
 
 
 '''Import Data'''
