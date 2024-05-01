@@ -28,8 +28,6 @@ def import_all_linear():
              
               percent_compare_linear(tempraw1N,data.columns[i],tempraw2N,data.columns[j],True,'C:/Users/ahuntle4/.spyder-py3/Data Anal/Graphs')
 
-
-
 def import_all_ordered():
     '''produces jaccard graphs for each pair of data in the dataset.
       normalised by order'''
@@ -49,8 +47,8 @@ def import_all_ordered():
 
 '''TEST RUNNING'''
 
-import_all_ordered()
-#import_all_linear()
+#import_all_ordered()
+import_all_linear()
 
 
 
