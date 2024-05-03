@@ -8,7 +8,7 @@ Created on Mon Apr 29 10:41:02 2024
 from analysis_tools import *
 import math
 
-def import_all_linear():
+def import_all_linear(F=True):
     '''produces jaccard graphs for each pair of data in the dataset.
     Linerarly normalised'''
     
@@ -18,16 +18,18 @@ def import_all_linear():
         
           tempraw1 = [data.iloc[:, 0].values,data.iloc[:, i].values]
           filtered_data = [x for x in tempraw1[1] if not isinstance(x, float) or not math.isnan(x)]
-          tempraw1N = normalise_linear(tempraw1, math.floor(min(filtered_data)),math.ceil(max(filtered_data)) , 0, 8)
+          tempraw1N = normalise_linear(tempraw1, math.floor(min(filtered_data)),math.ceil(max(filtered_data)) , 0, 8,F)
          
           for j in range(i,55):
              
               tempraw2 = [data.iloc[:, 0].values,data.iloc[:, j].values]
               filtered_data2 = [x for x in tempraw2[1] if not isinstance(x, float) or not math.isnan(x)]
-              tempraw2N = normalise_linear(tempraw2, math.floor(min(filtered_data2)), math.ceil(max(filtered_data2)), 0, 8)
-             
-              percent_compare_linear(tempraw1N,data.columns[i],tempraw2N,data.columns[j],True,'C:/Users/ahuntle4/.spyder-py3/Data Anal/Graphs')
-
+              tempraw2N = normalise_linear(tempraw2, math.floor(min(filtered_data2)), math.ceil(max(filtered_data2)), 0, 8,F)
+              if F ==True:
+                  percent_compare_linear(tempraw1N,data.columns[i],tempraw2N,data.columns[j],True,'C:/Users/ahuntle4/.spyder-py3/Data Anal/Graphs')
+              elif F==False:
+                  percent_compare_linear(tempraw1N,data.columns[i],tempraw2N,data.columns[j],True,'C:/Users/ahuntle4/.spyder-py3/Data Anal/Graphs/inverse')
+                  
 def import_all_ordered():
     '''produces jaccard graphs for each pair of data in the dataset.
       normalised by order'''
@@ -47,8 +49,9 @@ def import_all_ordered():
 
 '''TEST RUNNING'''
 
-#import_all_ordered()
+import_all_ordered()
 import_all_linear()
+import_all_linear(False)
 
 
 

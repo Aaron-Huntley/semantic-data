@@ -122,11 +122,12 @@ def linear_transform(value,A,B,a,b):
     
     return (value-A)*(b-a)/B-A +a
 
-def normalise_linear(G1,A,B,a,b):
+def normalise_linear(G1,A,B,a,b,F=True):
     """input a grounding and its grading scale A to B. 
     remove all NaN values from both arrays in G1.
     output normalised data
-    on the scale a to b"""
+    on the scale a to b
+    if F== True then this function also flips the order data by doing a-data"""
     
     G1[1] = G1[1].astype(float)
     float_mask = ~np.isnan(G1[1])
@@ -135,6 +136,10 @@ def normalise_linear(G1,A,B,a,b):
     
     array_to_transform = G1[1]
     transformed_array = [linear_transform(value,A,B,a,b) for value in array_to_transform]
+    if F == True:
+        transformed_array = [a-x for x in transformed_array]
+    elif F== False:
+        transformed_array = [1/x for x in transformed_array]
     G1[1] = transformed_array
  
     return G1
@@ -171,7 +176,7 @@ def percent_compare_ordered(G1,G1N,G2,G2N,D,pathname):
     
     return y
 
-def normalise_sort(G1):
+def normalise_sort(G1,F=True):
     """Input a grounding. removes unrated words. 
     Sort based on ratings and then forget the ratings.
         Return a single sorted list of words"""
@@ -184,7 +189,11 @@ def normalise_sort(G1):
     combined_G1 = list(zip(G1[0],G1[1]))
     ordered_pairs_G1 = sorted(combined_G1, key=lambda x: x[1])
     ordered_strings_G1, ordered_floats_G1 = zip(*ordered_pairs_G1)    
- 
+    
+   
+    ordered_strings_G1 = list(ordered_strings_G1)
+    ordered_strings_G1.reverse()
+
     return ordered_strings_G1
     
 def combine_raw(raw1,raw2,H):
