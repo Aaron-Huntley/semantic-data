@@ -204,17 +204,23 @@ def combine_raw(raw1,raw2,H):
     combined = [[],[]]
     if H == "min":
         combined[0] = raw1[0]
-        combined[1] = [min(a, b) for a, b in zip(raw1[1], raw2[1])]
+        combined[1] = np.array([min(a, b) for a, b in zip(raw1[1], raw2[1])])
         return combined
     elif H == "max":
         combined[0] = raw1[0]
-        combined[1] = [max(a, b) for a, b in zip(raw1[1], raw2[1])]
+        combined[1] = np.array([max(a, b) for a, b in zip(raw1[1], raw2[1])])
         return combined
     elif H == "mean":
         combined[0] = raw1[0]
-        combined[1] = [(a+b)/2 for a, b in zip(raw1[1], raw2[1])]
+        combined[1] = np.array([(a+b)/2 for a, b in zip(raw1[1], raw2[1])])
         
         return combined
+    
+    
+    
+    
+
+
     
 
 

@@ -46,12 +46,66 @@ def import_all_ordered():
                 
             percent_compare_ordered(raw1N, data.columns[i], raw2N, data.columns[j], True,'C:/Users/ahuntle4/.spyder-py3/Data Anal/Graphs')
 
-
+def compare_interesting():
+    '''Produces ordered Jaccard graphs of intresting pairs'''
+    
+    data = pd.read_csv("Dataset.csv")
+    
+    valence_warriner = [data.iloc[:, 0].values,data.iloc[:, 22].values]
+    arousal_warriner = [data.iloc[:, 0].values,data.iloc[:, 23].values]
+    valence_mohammad = [data.iloc[:, 0].values,data.iloc[:, 28].values]
+    arousal_mohammad = [data.iloc[:, 0].values,data.iloc[:, 29].values]
+    socialness = [data.iloc[:, 0].values,data.iloc[:, 1].values]
+    interoception_lanc = [data.iloc[:, 0].values,data.iloc[:, 12].values]
+    
+    emotion_warriner_min = combine_raw(valence_warriner, arousal_warriner, "min")
+    emotion_mohammad_min = combine_raw(valence_mohammad, arousal_mohammad, "min")
+    emotion_warriner_ave = combine_raw(valence_warriner, arousal_warriner, "mean")
+    emotion_mohammad_ave = combine_raw(valence_mohammad, arousal_mohammad, "mean")
+    
+    valence_warriner = normalise_sort(valence_warriner)
+    arousal_warriner = normalise_sort(arousal_warriner)
+    
+    valence_mohammad = normalise_sort(valence_mohammad)
+    arousal_mohammad = normalise_sort(arousal_mohammad)
+    
+    socialness = normalise_sort(socialness)
+    interoception_lanc = normalise_sort(interoception_lanc)
+    
+    emotion_warriner_min = normalise_sort(emotion_warriner_min)
+    emotion_mohammad_min = normalise_sort(emotion_mohammad_min)
+    
+    emotion_warriner_ave = normalise_sort(emotion_warriner_ave)
+    emotion_mohammad_ave = normalise_sort(emotion_mohammad_ave)
+    
+    
+    percent_compare_ordered(valence_warriner, 'valence_warriner', valence_mohammad, 'valence_mohammad', True,'C:/Users/ahuntle4/.spyder-py3/Data Anal/CoolGraphs')
+    percent_compare_ordered(arousal_warriner, 'arousal_warriner', arousal_mohammad, 'arousal_mohammad', True,'C:/Users/ahuntle4/.spyder-py3/Data Anal/CoolGraphs')
+    
+    percent_compare_ordered(emotion_warriner_min, 'emotion_warriner_min', emotion_mohammad_min, 'emotion_mohammad_min', True,'C:/Users/ahuntle4/.spyder-py3/Data Anal/CoolGraphs')
+    percent_compare_ordered(emotion_warriner_ave, 'emotion_warriner_ave', emotion_mohammad_ave, 'emotion_mohammad_ave', True,'C:/Users/ahuntle4/.spyder-py3/Data Anal/CoolGraphs')
+    
+    percent_compare_ordered(interoception_lanc, 'interoception_lanc', valence_warriner, 'valence_warriner', True,'C:/Users/ahuntle4/.spyder-py3/Data Anal/CoolGraphs')
+    percent_compare_ordered(interoception_lanc, 'interoception_lanc', valence_mohammad, 'valence_mohammad', True,'C:/Users/ahuntle4/.spyder-py3/Data Anal/CoolGraphs')
+    percent_compare_ordered(interoception_lanc, 'interoception_lanc', arousal_warriner, 'arousal_warriner', True,'C:/Users/ahuntle4/.spyder-py3/Data Anal/CoolGraphs')
+    percent_compare_ordered(interoception_lanc, 'interoception_lanc', arousal_mohammad, 'arousal_mohammad', True,'C:/Users/ahuntle4/.spyder-py3/Data Anal/CoolGraphs')
+   
+    percent_compare_ordered(interoception_lanc, 'interoception_lanc', arousal_warriner, 'emotion_warriner_min', True,'C:/Users/ahuntle4/.spyder-py3/Data Anal/CoolGraphs')
+    percent_compare_ordered(interoception_lanc, 'interoception_lanc', arousal_mohammad, 'emotion_mohammad_min', True,'C:/Users/ahuntle4/.spyder-py3/Data Anal/CoolGraphs')
+    percent_compare_ordered(interoception_lanc, 'interoception_lanc', arousal_warriner, 'emotion_warriner_ave', True,'C:/Users/ahuntle4/.spyder-py3/Data Anal/CoolGraphs')
+    percent_compare_ordered(interoception_lanc, 'interoception_lanc', arousal_mohammad, 'emotion_mohammad_ave', True,'C:/Users/ahuntle4/.spyder-py3/Data Anal/CoolGraphs')
+    
+    
+    
 '''TEST RUNNING'''
 
-import_all_ordered()
-import_all_linear()
-import_all_linear(False)
+compare_interesting()
+
+# import_all_ordered()
+# import_all_linear()
+# import_all_linear(False)
+
+
 
 
 
